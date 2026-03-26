@@ -16,6 +16,7 @@ import tempfile
 import subprocess
 from pathlib import Path
 from heap import unique_batch
+from heap.foldseek import HEADER_STR, foldseek_output_to_detected_table
 from tangle.detected import DetectedTable
 
 
@@ -45,15 +46,10 @@ prost_path = Path(args.prost_db).resolve()
 prost_dir = prost_path.parent
 prost_fn = prost_path.name
 
-headers = "query,target,evalue,bits,fident,qstart,qend,tstart,tend"
-header_array = headers.split(",")
-
-
-results = []
 
 with tempfile.NamedTemporaryFile(delete=False, suffix=".tsv", mode="w", dir=query_dir) as res_f:
     res_f.close()
-    res_fn = Path(res_f.name).name
+    res_file = Path(res_f.name).name
 
     cmd = [
       "docker", "run", "--rm",
@@ -61,8 +57,8 @@ with tempfile.NamedTemporaryFile(delete=False, suffix=".tsv", mode="w", dir=quer
       "-v", f"{target_dir}:/db",
       "-v", f"{prost_dir}:/prost",
       foldseek_docker_image, "easy-search",
-      f"/work/{query_fn}", f"/db/{target_fn}", f"/work/{res_fn}", "/tmp",
-      "--format-output", headers,
+      f"/work/{query_fn}", f"/db/{target_fn}", f"/work/{res_file}", "/tmp",
+      "--format-output", HEADER_STR,
       "--prostt5-model", f"/prost/{prost_fn}"
     ]
     print(" ".join(cmd))
@@ -74,31 +70,13 @@ with tempfile.NamedTemporaryFile(delete=False, suffix=".tsv", mode="w", dir=quer
         print(f"STDERR: {e.stderr}")
         raise e
 
-    with open(res_f.name, "r") as f:
-        for line in f:
-            res = {header_array[i]:t for i,t in enumerate(line.strip().split('\t'))}
-            results.append(res)
+    foldseek_output_to_detected_table(
+        res_f.name,
+        args.result_tsv,
+        args.query_database_name,
+        args.query_type,
+        args.target_database_name,
+        args.target_type
+    )
 
     os.remove(res_f.name)
-
-rows = []
-for res in results:
-    row = {}
-    row["detection_type"] = "structure"
-    row["detection_method"] = "prost-t5-foldseek"
-    row["batch"] = unique_batch()
-    row["query_accession"] = res["query"]
-    row["query_database"] = args.query_database_name
-    row["query_type"] = args.query_type
-    row["target_accession"] = res["target"]
-    row["target_database"] = args.target_database_name
-    row["target_type"] = args.target_type
-    row["query_start"] = res["qstart"]
-    row["query_end"] = res["qend"]
-    row["target_start"] = res["tstart"]
-    row["target_end"] = res["tend"]
-    row["evalue"] = res["evalue"]
-    row["bitscore"] = res["bits"]
-    rows.append(row)
-
-DetectedTable.write_tsv(args.result_tsv, rows)

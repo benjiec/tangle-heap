@@ -10,6 +10,8 @@ proteins do.
 
 ## Setup
 
+Install hmmer3 package: e.g. on MacOS run `brew install hmmer`
+
 FoldSeek
 
 ```
@@ -34,6 +36,8 @@ docker run -v /host/dir:/app --rm \
 
 
 ## FoldSeek Searching
+
+From a .cif file
 
 ```
 docker run --rm -v /host/db-dir:/db -v /host/cif-file-dir:/app \
