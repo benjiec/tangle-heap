@@ -1,5 +1,5 @@
 """
-PYTHONPATH=. python3 scripts/prost-search.py \
+PYTHONPATH=. python3 scripts/foldseek.py \
   --query-database-name a \
   --query-type protein \
   --target-database-name c \
