@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "heap"
 version = "0.1.0"
 dependencies = [
-  "tangle @ git+https://github.com/benjiec/tangle.git@acea505"
+  "tangle @ git+https://github.com/benjiec/tangle.git@main"
 ]
 description = "Detection and classification using HMM and Structural Search"
 requires-python = ">=3.9"

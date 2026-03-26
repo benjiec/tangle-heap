@@ -48,6 +48,6 @@ Or directly from a FASTA
 docker run --rm -v /host/db-dir:/db -v /host/fasta-dir:/app \
   ghcr.io/steineggerlab/foldseek easy-search \
   /app/query.faa /db/afdb-swissprot /app/res-faa.tsv /tmp \
-  --format-output "query,target,prob,evalue,bits,fident,qstart,qend,tstart,tend" \
+  --format-output "query,target,evalue,bits,fident,qstart,qend,tstart,tend" \
   --prostt5-model /db/prost-t5-weights
 ```
