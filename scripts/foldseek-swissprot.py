@@ -10,6 +10,7 @@ def accession_rewriter(acc):
         raise Exception(f"Don't know how to parse and rewrite {acc}")
     return m.group(1)
 
+
 if __name__ == "__main__":
 
     ap = argparse.ArgumentParser()
@@ -22,7 +23,7 @@ if __name__ == "__main__":
 
     db_dir = os.environ.get("FOLDSEEK_DB_DIR")
     if db_dir is None:
-        raise Exception("Please set FOLDSEEK_DB_DIR to contain location of the SwissProt and Prost-T5 databases")
+        raise Exception("Please set FOLDSEEK_DB_DIR to directory with the SwissProt and Prost-T5 databases")
 
     target_db = os.path.join(db_dir, "afdb-swissprot")
     prost_db = os.path.join(db_dir, "prost-t5-weights")

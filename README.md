@@ -10,9 +10,27 @@ proteins do.
 
 ## Setup
 
+### HMM
+
 Install hmmer3 package: e.g. on MacOS run `brew install hmmer`
 
-FoldSeek
+Download the following profiles
+
+  * KEGG KO profile HMMs: `https://www.genome.jp/ftp/db/kofam/profiles.tar.gz`
+    * Then concatenate all the profiles together: `cat profiles/*.hmm > ko.hmm`
+    * Run `hmmpress ko.hmm`
+    * Also grab `ko_thresholds.gz` from KEGG FTP site `https://www.genome.jp/ftp/db/kofam/ko_list.gz`
+
+  * Pfam HMM profiles: `https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz`
+    * Run `hmmpress Pfam-A.hmm`
+
+Put these files in the same directory then set the following environment variable
+
+```
+HMM_DB_DIR=</host/hmm_dir>
+```
+
+### FoldSeek
 
 ```
 docker pull ghcr.io/steineggerlab/foldseek:latest
@@ -37,8 +55,40 @@ docker run -v /host/db_dir:/app --rm \
 Then, to use foldseek scripts, set the following environment variables
 
 ```
-FOLDSEEK_DB_DIR=/host/db_dir
+FOLDSEEK_DB_DIR=</host/db_dir>
 ```
+
+
+## HMM Searching
+
+### Pfam
+
+Following script can be used to search for Pfam domains
+
+```
+PYTHONPATH=. python3 scripts/hmmscan-pfam.py \
+  --query-database-name exp-doi:10.1126_sciadv.aba2498 \
+  query.faa test.tsv
+```
+
+The query database name should uniquely identify the source of the query
+accessions in the query fasta file.
+
+This script uses hmmscan with GA cutoff scores as the reporting threshold, so
+reported domains are likely correct.
+
+### KO
+
+You can search against KO HMM profile similarly,
+
+```
+PYTHONPATH=. python3 scripts/hmmscan-ko.py \
+  --query-database-name exp-doi:10.1126_sciadv.aba2498 \
+  query.faa test.tsv
+```
+
+But because KO HMM profiles do not use GA scores, but rather a separate
+threshold file, a second script is needed to assign the results.
 
 
 ## FoldSeek Searching
@@ -62,14 +112,4 @@ docker run --rm -v /host/db-dir:/db -v /host/cif-file-dir:/app \
   ghcr.io/steineggerlab/foldseek easy-search \
   /app/fold_2026_03_12_14_08_model_0.cif /db/pdb /app/res.tsv /tmp \
   --format-output "query,target,prob,evalue,bits,fident,qstart,qend,tstart,tend"
-```
-
-Or directly from a FASTA
-
-```
-docker run --rm -v /host/db-dir:/db -v /host/fasta-dir:/app \
-  ghcr.io/steineggerlab/foldseek easy-search \
-  /app/query.faa /db/afdb-swissprot /app/res-faa.tsv /tmp \
-  --format-output "query,target,evalue,bits,fident,qstart,qend,tstart,tend" \
-  --prostt5-model /db/prost-t5-weights
 ```

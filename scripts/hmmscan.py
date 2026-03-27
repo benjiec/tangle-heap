@@ -1,40 +1,28 @@
-"""
-PYTHONPATH=. python3 scripts/hmmscan.py \
-  --query-database-name a \
-  --query-type protein \
-  --target-database-name c \
-  --target-type protein \
-  ~/Downloads/query.faa \
-  /Users/benjie/git/tangle/needle/pfam-downloads/Pfam-A.hmm \
-  test.tsv
-"""
-
-import os
 import argparse
-import tempfile
 from heap.hmm import hmmscan, hmm_results_to_detected_table
 
 
-ap = argparse.ArgumentParser()
-ap.add_argument("--query-database-name", required=True)
-ap.add_argument("--query-type", required=True)
-ap.add_argument("--target-database-name", required=True)
-ap.add_argument("--target-type", required=True)
-ap.add_argument("--cpus", default=2)
-ap.add_argument("--disable-cutoff", action='store_true', default=False)
-ap.add_argument("query_faa")
-ap.add_argument("target_db")
-ap.add_argument("result_tsv")
-args = ap.parse_args()
+if __name__ == "__main__":
 
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--query-database-name", required=True)
+    ap.add_argument("--query-type", required=True)
+    ap.add_argument("--target-database-name", required=True)
+    ap.add_argument("--target-type", required=True)
+    ap.add_argument("--cpus", default=2)
+    ap.add_argument("--disable-cutoff", action='store_true', default=False)
+    ap.add_argument("query_faa")
+    ap.add_argument("target_db")
+    ap.add_argument("result_tsv")
+    args = ap.parse_args()
 
-results = hmmscan(args.target_db, args.query_faa, cpu=args.cpus, cutoff=not args.disable_cutoff)
-hmm_results_to_detected_table(
-    results,
-    args.result_tsv,
-    args.query_database_name,
-    args.query_type,
-    args.target_database_name,
-    args.target_type,
-    True
-)
+    results = hmmscan(args.target_db, args.query_faa, cpu=args.cpus, cutoff=not args.disable_cutoff)
+    hmm_results_to_detected_table(
+        results,
+        args.result_tsv,
+        args.query_database_name,
+        args.query_type,
+        args.target_database_name,
+        args.target_type,
+        "hmmscan"
+    )
