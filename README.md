@@ -19,7 +19,8 @@ Download the following profiles
   * KEGG KO profile HMMs: `https://www.genome.jp/ftp/db/kofam/profiles.tar.gz`
     * Then concatenate all the profiles together: `cat profiles/*.hmm > ko.hmm`
     * Run `hmmpress ko.hmm`
-    * Also grab `ko_thresholds.gz` from KEGG FTP site `https://www.genome.jp/ftp/db/kofam/ko_list.gz`
+    * Also create `ko_thresholds.tsv` from KEGG FTP site `https://www.genome.jp/ftp/db/kofam/ko_list.gz`
+      * Filter away rows without a threshold, using `grep -v "\-\t\-" ko_thresholds.txt`
 
   * Pfam HMM profiles: `https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz`
     * Run `hmmpress Pfam-A.hmm`
@@ -68,7 +69,7 @@ Following script can be used to search for Pfam domains
 ```
 PYTHONPATH=. python3 scripts/hmmscan-pfam.py \
   --query-database-name exp-doi:10.1126_sciadv.aba2498 \
-  query.faa test.tsv
+  query.faa test_result.tsv
 ```
 
 The query database name should uniquely identify the source of the query
@@ -84,11 +85,21 @@ You can search against KO HMM profile similarly,
 ```
 PYTHONPATH=. python3 scripts/hmmscan-ko.py \
   --query-database-name exp-doi:10.1126_sciadv.aba2498 \
-  query.faa test.tsv
+  query.faa test_result.tsv
 ```
 
 But because KO HMM profiles do not use GA scores, but rather a separate
-threshold file, a second script is needed to assign the results.
+threshold file, a second script is needed to make assignments.
+
+```
+PYTHONPATH=. python3 scripts/ko-assign.py \
+  test_result.tsv test_result_assigned.tsv
+```
+
+Use the `--scoring-ratio-min` option to change the min ratio of bitscore over
+threshold used to filter the results. Default is 0.99. If you change to 0.7,
+for example, the resulting file may include putative matches worth
+investigating.
 
 
 ## FoldSeek Searching
@@ -98,7 +109,7 @@ Use the following script to search the SwissProt database
 ```
 PYTHONPATH=. python3 scripts/foldseek-swissprot.py \
   --query-database-name exp-doi:10.1126_sciadv.aba2498 \
-  query.faa test.tsv
+  query.faa test_result.tsv
 ```
 
 The query database name should uniquely identify the source of the query

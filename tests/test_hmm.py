@@ -16,7 +16,6 @@ class TestDomTblParser(unittest.TestCase):
                 f.write("# target name  accession  tlen  query name  accession  qlen  E-value  score  bias  #  of  c-Evalue  i-Evalue  score  bias  from  to  from  to\n")
                 f.write("cand_0 _ 81 _ _ 5 0.1 100 _ _ _ 0.005 0.05 201 _ 11 12 13 14\n")
                 f.write("cand_0 _ 82 _ _ 6 0.2 101 _ _ _ 0.004 0.04 202 _ 21 22 23 24\n")
-                f.close()
 
             matches = parse_hmm_domtbl(temp_file_path)
             self.assertEqual(len(matches), 2)
@@ -55,7 +54,6 @@ class TestDomTblParser(unittest.TestCase):
                 f.write("# target name  accession  tlen  query name  accession  qlen  E-value  score  from  to  from  to\n")
                 f.write("cand_0 _ _ _ _ _ 0.1 100 11 12 13 14\n")
                 f.write("cand_0 _ _ _ _ _ 0.2 101 21 22 23 24\n")
-                f.close()
 
             with self.assertRaises(AssertionError):
                 parse_hmm_domtbl(temp_file_path)
