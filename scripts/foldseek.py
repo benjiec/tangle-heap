@@ -47,17 +47,19 @@ prost_dir = prost_path.parent
 prost_fn = prost_path.name
 
 
-with tempfile.NamedTemporaryFile(delete=False, suffix=".tsv", mode="w", dir=query_dir) as res_f:
-    res_f.close()
-    res_file = Path(res_f.name).name
+with tempfile.TemporaryDirectory() as tmpd:
+    tmpf = os.path.join(tmpd, "foldseek-results.tsv")
+    res_file = Path(tmpf).name
+    output_dir = Path(tmpf).parent
 
     cmd = [
       "docker", "run", "--rm",
-      "-v", f"{query_dir}:/work",
+      "-v", f"{query_dir}:/input",
+      "-v", f"{output_dir}:/output",
       "-v", f"{target_dir}:/db",
       "-v", f"{prost_dir}:/prost",
       foldseek_docker_image, "easy-search",
-      f"/work/{query_fn}", f"/db/{target_fn}", f"/work/{res_file}", "/tmp",
+      f"/input/{query_fn}", f"/db/{target_fn}", f"/output/{res_file}", "/tmp",
       "--format-output", HEADER_STR,
       "--prostt5-model", f"/prost/{prost_fn}"
     ]
@@ -71,12 +73,10 @@ with tempfile.NamedTemporaryFile(delete=False, suffix=".tsv", mode="w", dir=quer
         raise e
 
     foldseek_output_to_detected_table(
-        res_f.name,
+        tmpf,
         args.result_tsv,
         args.query_database_name,
         args.query_type,
         args.target_database_name,
         args.target_type
     )
-
-    os.remove(res_f.name)

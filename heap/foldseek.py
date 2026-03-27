@@ -14,9 +14,12 @@ def foldseek_output_to_detected_table(
     query_database,
     query_type,
     target_database,
-    target_type
+    target_type,
+    batch=None
   ):
+
     rows = []
+    batch = unique_batch() if batch is None else batch
 
     with open(foldseek_output_fn, "r") as f:
         for line in f:
@@ -25,7 +28,7 @@ def foldseek_output_to_detected_table(
             row = {}
             row["detection_type"] = "structure"
             row["detection_method"] = "prost-t5-foldseek"
-            row["batch"] = unique_batch()
+            row["batch"] = batch
             row["query_accession"] = tsv_tokens[HEADERS.index("query")]
             row["query_database"] = query_database
             row["query_type"] = query_type

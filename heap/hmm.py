@@ -103,31 +103,40 @@ def hmm_results_to_detected_table(
     query_type,
     target_database,
     target_type,
-    is_hmmscan_mode
+    hmm_mode,
+    batch=None
   ):
 
+    assert hmm_mode in ("hmmscan", "hmmsearch")
+
     rows = []
+    batch = unique_batch() if batch is None else batch
+
     for res in results:
         row = {}
         row["detection_type"] = "sequence"
         row["detection_method"] = "hmm"
-        row["batch"] = unique_batch()
+        row["batch"] = batch
         row["query_database"] = query_database
         row["query_type"] = query_type
         row["target_database"] = target_database
         row["target_type"] = target_type
 
-        if is_hmmscan_mode:
-            row["query_accession"] = res["query_accession"].strip() if res["query_accession"].strip() != "-" else res["query_name"].strip()
-            row["target_accession"] = res["target_accession"].strip() if res["target_accession"].strip() != "-" else res["target_name"].strip()
+        if hmm_mode == "hmmscan":
+            row["query_accession"] = res["query_accession"].strip() if res["query_accession"].strip() not in ("-", "") else res["query_name"].strip()
+            row["target_accession"] = res["target_accession"].strip() if res["target_accession"].strip() not in ("-", "") else res["target_name"].strip()
+            row["query_start"] = res["ali_from"]
+            row["query_end"] = res["ali_to"]
+            row["target_start"] = res["hmm_from"]
+            row["target_end"] = res["hmm_to"]
         else:
             row["target_accession"] = res["query_accession"].strip() if res["query_accession"].strip() != "-" else res["query_name"].strip()
             row["query_accession"] = res["target_accession"].strip() if res["target_accession"].strip() != "-" else res["target_name"].strip()
+            row["query_start"] = res["hmm_from"]
+            row["query_end"] = res["hmm_to"]
+            row["target_start"] = res["ali_from"]
+            row["target_end"] = res["ali_to"]
 
-        row["query_start"] = res["ali_from"]
-        row["query_end"] = res["ali_to"]
-        row["target_start"] = res["hmm_from"]
-        row["target_end"] = res["hmm_to"]
         row["evalue"] = res["dom_evalue"]
         row["bitscore"] = res["dom_score"]
         rows.append(row)
