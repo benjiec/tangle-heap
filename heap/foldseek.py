@@ -15,7 +15,9 @@ def foldseek_output_to_detected_table(
     query_type,
     target_database,
     target_type,
-    batch=None
+    target_accession_rewriter_func = None,
+    evalue_threshold = None,
+    batch = None
   ):
 
     rows = []
@@ -39,8 +41,13 @@ def foldseek_output_to_detected_table(
             row["query_end"] = tsv_tokens[HEADERS.index("qend")]
             row["target_start"] = tsv_tokens[HEADERS.index("tstart")]
             row["target_end"] = tsv_tokens[HEADERS.index("tend")]
-            row["evalue"] = tsv_tokens[HEADERS.index("evalue")]
-            row["bitscore"] = tsv_tokens[HEADERS.index("bits")]
-            rows.append(row)
+            row["evalue"] = float(tsv_tokens[HEADERS.index("evalue")])
+            row["bitscore"] = float(tsv_tokens[HEADERS.index("bits")])
+
+            if target_accession_rewriter_func is not None:
+                row["target_accession"] = target_accession_rewriter_func(row["target_accession"])
+
+            if evalue_threshold is None or row["evalue"] < evalue_threshold:
+                rows.append(row)
 
     DetectedTable.write_tsv(result_tsv, rows)

@@ -21,23 +21,41 @@ docker pull ghcr.io/steineggerlab/foldseek:latest
 Then download databases to a host directory mounted onto the container
 
 ```
-docker run -v /host/dir:/app --rm \
+docker run -v /host/db_dir:/app --rm \
   ghcr.io/steineggerlab/foldseek databases \
   Alphafold/Swiss-Prot /app/afdb-swissprot /tmp
 
-docker run -v /host/dir:/app --rm \
+docker run -v /host/db_dir:/app --rm \
   ghcr.io/steineggerlab/foldseek databases \
   PDB /app/pdb /tmp
 
-docker run -v /host/dir:/app --rm \
+docker run -v /host/db_dir:/app --rm \
   ghcr.io/steineggerlab/foldseek databases \
   ProstT5 /app/prost-t5-weights /tmp
+```
+
+Then, to use foldseek scripts, set the following environment variables
+
+```
+FOLDSEEK_DB_DIR=/host/db_dir
 ```
 
 
 ## FoldSeek Searching
 
-From a .cif file
+Use the following script to search the SwissProt database
+
+```
+PYTHONPATH=. python3 scripts/foldseek-swissprot.py \
+  --query-database-name exp-doi:10.1126_sciadv.aba2498 \
+  query.faa test.tsv
+```
+
+The query database name should uniquely identify the source of the query
+accessions in the query fasta file.
+
+
+From a .cif file, you can use the Docker image directly
 
 ```
 docker run --rm -v /host/db-dir:/db -v /host/cif-file-dir:/app \

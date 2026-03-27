@@ -98,18 +98,17 @@ class TestParsingHMMResultsToTable(unittest.TestCase):
                 tmpf,
                 "q", "protein", "t", "protein",
                 "hmmscan",
-                batch="20260327_530fecb5"
+                batch = "20260327_530fecb5"
             )
-
-            f = open(tmpf, "r")
 
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
 sequence	hmm	20260327_530fecb5	a	q	protein	c	t	protein	4	5	2	3	1e-11	13.0			
 sequence	hmm	20260327_530fecb5	e	q	protein	g	t	protein	14	15	12	13	2e-11	15.0			
 """
-            self.assertEqual(f.read().strip(), expected.strip())
-            f.close()
+
+            with open(tmpf, "r") as f:
+                self.assertEqual(f.read().strip(), expected.strip())
 
 
     def test_non_hmmscan_mode_reverses_query_target(self):
@@ -136,17 +135,16 @@ sequence	hmm	20260327_530fecb5	e	q	protein	g	t	protein	14	15	12	13	2e-11	15.0
                 tmpf,
                 "q", "protein", "t", "protein",
                 "hmmsearch",
-                batch="20260327_530fecb5"
+                batch = "20260327_530fecb5"
             )
-
-            f = open(tmpf, "r")
 
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
 sequence	hmm	20260327_530fecb5	c	q	protein	a	t	protein	2	3	4	5	1e-11	13.0			
 """
-            self.assertEqual(f.read().strip(), expected.strip())
-            f.close()
+
+            with open(tmpf, "r") as f:
+                self.assertEqual(f.read().strip(), expected.strip())
 
     def test_uses_name_if_accession_is_empty_or_dash(self):
 
@@ -183,15 +181,14 @@ sequence	hmm	20260327_530fecb5	c	q	protein	a	t	protein	2	3	4	5	1e-11	13.0
                 tmpf,
                 "q", "protein", "t", "protein",
                 "hmmscan",
-                batch="20260327_530fecb5"
+                batch = "20260327_530fecb5"
             )
-
-            f = open(tmpf, "r")
 
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
 sequence	hmm	20260327_530fecb5	b	q	protein	d	t	protein	4	5	2	3	1e-11	13.0			
 sequence	hmm	20260327_530fecb5	f	q	protein	h	t	protein	14	15	12	13	2e-11	15.0			
 """
-            self.assertEqual(f.read().strip(), expected.strip())
-            f.close()
+
+            with open(tmpf, "r") as f:
+                self.assertEqual(f.read().strip(), expected.strip())
