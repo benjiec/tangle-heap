@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
+from tangle import unique_batch
 from tangle.detected import DetectedTable
-from . import unique_batch
 
 
 HEADERS = ["query", "target", "evalue", "bits", "qstart", "qend", "tstart", "tend"]

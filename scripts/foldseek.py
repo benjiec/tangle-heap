@@ -3,8 +3,8 @@ import argparse
 import tempfile
 import subprocess
 from pathlib import Path
-from heap import unique_batch
 from heap.foldseek import HEADER_STR, foldseek_output_to_detected_table
+from tangle import unique_batch
 from tangle.detected import DetectedTable
 
 

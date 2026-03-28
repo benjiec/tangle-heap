@@ -5,8 +5,8 @@ import subprocess
 from dataclasses import dataclass
 from typing import List
 from Bio import SearchIO
+from tangle import unique_batch
 from tangle.detected import DetectedTable
-from . import unique_batch
 
 
 def run_command(cmd: str):

@@ -1,6 +1,5 @@
 import argparse
-from heap import unique_batch
-from tangle import open_file_to_read
+from tangle import open_file_to_read, unique_batch
 from tangle.detected import DetectedTable
 
 ap = argparse.ArgumentParser()

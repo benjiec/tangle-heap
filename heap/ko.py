@@ -1,5 +1,5 @@
 import duckdb
-from . import unique_batch
+from tangle import unique_batch
 from tangle.models import Schema, Table, Column, CSVSource
 from tangle.detected import DetectedTable
 
