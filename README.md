@@ -71,6 +71,8 @@ docker push us-east1-docker.pkg.dev/needle-489321/tangle-docker/heap:latest
 
 Foldseek image
 
+(Note you may need to cleanup existing non-amd64 versions of the foldseem image first, using `docker rmi`)
+
 ```
 docker pull --platform linux/amd64 ghcr.io/steineggerlab/foldseek:latest
 docker tag ghcr.io/steineggerlab/foldseek:latest us-east1-docker.pkg.dev/needle-489321/tangle-docker/foldseek:amd64
