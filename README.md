@@ -60,6 +60,28 @@ FOLDSEEK_DB_DIR=</host/db_dir>
 ```
 
 
+## Hosting Docker Images on Google Cloud
+
+This repo
+
+```
+docker build --platform linux/amd64 -t us-east1-docker.pkg.dev/needle-489321/tangle-docker/heap:latest .
+docker push us-east1-docker.pkg.dev/needle-489321/tangle-docker/heap:latest
+```
+
+Foldseek image
+
+```
+docker pull --platform linux/amd64 ghcr.io/steineggerlab/foldseek:latest
+docker tag ghcr.io/steineggerlab/foldseek:latest us-east1-docker.pkg.dev/needle-489321/tangle-docker/foldseek:amd64
+docker push us-east1-docker.pkg.dev/needle-489321/tangle-docker/foldseek:amd64
+```
+
+And, to use these images on Google Cloud, make sure everything under
+FOLDSEEK_DB_DIR or HMM_DB_DIR are synced to Google Cloud storage, into a
+bucket.
+
+
 ## HMM Searching
 
 ### Pfam
