@@ -1,0 +1,21 @@
+# Copy prep scripts to bucket
+
+gcloud storage cp prep-general.sh ${GC_RUN_DIR}/
+gcloud storage cp prep-task.sh ${GC_RUN_DIR}/
+
+# Copy inputs to bucket
+
+gcloud storage cp inputs/* ${GC_RUN_INPUT_DIR}/
+
+# Submit job
+
+gcloud batch jobs submit hmmscan-pfam-${BATCH_NAME} --config job.json --location us-east1
+
+# Review job progress
+
+gcloud batch jobs describe hmmscan-pfam-${BATCH_NAME} --location us-east1
+
+# Retrieve outouts
+
+gsutil cat ${GC_RUN_OUTPUT_DIR}/sequence_pfam_*.tsv > sequence_pfam_full.tsv
+{ head -1 sequence_pfam_full.tsv; grep -v protein_accession sequence_pfam_full.tsv; } > sequence_pfam.tsv

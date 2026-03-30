@@ -102,6 +102,17 @@ accessions in the query fasta file.
 This script uses hmmscan with GA cutoff scores as the reporting threshold, so
 reported domains are likely correct.
 
+To prepare and submit this job to run on Google Cloud, use the following script
+to create a run directory under `runs` (or whatever value for `--run-dir`), and
+then follow instructions in the README file in that run directory.
+
+```
+PYTHPATH=. python3 gcloud/hmmscan-pfam/setup.py \
+  --query-database-name exp-doi:10.1126_sciadv.aba2498.SRR9331959_algae_denovo \
+  --run-dir=runs \
+  proteins.faa.gz
+```
+
 ### KO
 
 You can search against KO HMM profile similarly,
