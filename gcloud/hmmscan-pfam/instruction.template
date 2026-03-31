@@ -18,7 +18,7 @@ gcloud batch jobs describe hmmscan-pfam-${BATCH_NAME} --location us-east1
 # Retrieve outouts
 
 gsutil cat ${GC_RUN_OUTPUT_DIR}/sequence_pfam_\*.tsv > sequence_pfam_full.tsv
-{ head -1 sequence_pfam_full.tsv; grep -v protein_accession sequence_pfam_full.tsv; } > sequence_pfam.tsv; rm sequence_pfam_full.tsv
+{ head -1 sequence_pfam_full.tsv; grep -v query_database sequence_pfam_full.tsv; } > sequence_pfam.tsv; rm sequence_pfam_full.tsv
 
 # Delete job in case you need to resubmit
 
