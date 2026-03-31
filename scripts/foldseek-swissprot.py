@@ -1,6 +1,8 @@
 import re
 import os
+import tempfile
 import argparse
+from heap.foldseek import foldseek_output_to_detected_table
 from foldseek import run_foldseek
 
 
@@ -17,7 +19,8 @@ if __name__ == "__main__":
     ap.add_argument("--query-database-name", required=True)
     ap.add_argument("--query-type", default="protein")
     ap.add_argument("--evalue-threshold", type=float, default=1e-3)
-    ap.add_argument("query_faa")
+    ap.add_argument("--input-from-foldseek", action="store_true", default=False)
+    ap.add_argument("input_fn")
     ap.add_argument("result_tsv")
     args = ap.parse_args()
 
@@ -33,15 +36,25 @@ if __name__ == "__main__":
     if not os.path.exists(prost_db):
         raise Exception(f"Cannot find the prost-t5 database at {prost_db}")
 
-    run_foldseek(
-        args.query_faa,
-        target_db,
-        prost_db,
-        args.result_tsv,
-        args.query_database_name,
-        args.query_type,
-        "afdb-swissprot",
-        "protein",
-        target_accession_rewriter_func = accession_rewriter,
-        evalue_threshold = args.evalue_threshold
-    )
+    with tempfile.TemporaryDirectory() as tmpd:
+        if args.input_from_foldseek:
+            tmpf = args.input_fn
+        else:
+            tmpf = os.path.join(tmpd, "foldseek-results.tsv")
+            run_foldseek(
+                args.input_fn,
+                target_db,
+                prost_db,
+                tmpf
+            )
+
+        foldseek_output_to_detected_table(
+            tmpf,
+            args.result_tsv,
+            args.query_database_name,
+            args.query_type,
+            "afdb-swissprot",
+            "protein",
+            target_accession_rewriter_func = accession_rewriter,
+            evalue_threshold = args.evalue_threshold
+        )

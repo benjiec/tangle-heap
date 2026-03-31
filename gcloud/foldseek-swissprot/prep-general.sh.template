@@ -9,8 +9,8 @@ chmod 777 "$WORKSPACE"
 
 if [ ! -f "$TEST_FILE" ]; then
   echo "DB files missing. Downloading from GCS..."
-  gsutil -m -o "GSUtil:check_hashes=never" cp ${GC_FOLDSEEK_PATH}/afdb-swissprot* "$WORKSPACE/"
-  gsutil -m -o "GSUtil:check_hashes=never" cp -r ${GC_FOLDSEEK_PATH}/prost-t5-weights "$WORKSPACE/"
+  gsutil -m -o "GSUtil:check_hashes=never" cp ${GC_FOLDSEEK_DIR}/afdb-swissprot\* "$WORKSPACE/"
+  gsutil -m -o "GSUtil:check_hashes=never" cp -r ${GC_FOLDSEEK_DIR}/prost-t5-weights "$WORKSPACE/"
 else
   echo "DB files may already exist. Skipping download."
 fi

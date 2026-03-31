@@ -12,13 +12,7 @@ def run_foldseek(
     query_faa,
     target_db,
     prost_db,
-    result_tsv,
-    query_database_name,
-    query_type,
-    target_database_name,
-    target_type,
-    target_accession_rewriter_func = None,
-    evalue_threshold = 1e-3
+    output_fn
 ):
 
     foldseek_docker_image = os.environ.get("FOLDSEEK_DOCKER_IMAGE", "ghcr.io/steineggerlab/foldseek")
@@ -35,42 +29,28 @@ def run_foldseek(
     prost_dir = prost_path.parent
     prost_fn = prost_path.name
 
+    res_file = Path(output_fn).name
+    output_dir = Path(output_fn).parent
 
-    with tempfile.TemporaryDirectory() as tmpd:
-        tmpf = os.path.join(tmpd, "foldseek-results.tsv")
-        res_file = Path(tmpf).name
-        output_dir = Path(tmpf).parent
+    cmd = [
+      "docker", "run", "--rm",
+      "-v", f"{query_dir}:/input",
+      "-v", f"{output_dir}:/output",
+      "-v", f"{target_dir}:/db",
+      "-v", f"{prost_dir}:/prost",
+      foldseek_docker_image, "easy-search",
+      f"/input/{query_fn}", f"/db/{target_fn}", f"/output/{res_file}", "/tmp",
+      "--format-output", HEADER_STR,
+      "--prostt5-model", f"/prost/{prost_fn}"
+    ]
+    print(" ".join(cmd))
 
-        cmd = [
-          "docker", "run", "--rm",
-          "-v", f"{query_dir}:/input",
-          "-v", f"{output_dir}:/output",
-          "-v", f"{target_dir}:/db",
-          "-v", f"{prost_dir}:/prost",
-          foldseek_docker_image, "easy-search",
-          f"/input/{query_fn}", f"/db/{target_fn}", f"/output/{res_file}", "/tmp",
-          "--format-output", HEADER_STR,
-          "--prostt5-model", f"/prost/{prost_fn}"
-        ]
-        print(" ".join(cmd))
-
-        try:
-            subprocess.run(cmd, check=True, capture_output=True, text=True)
-        except subprocess.CalledProcessError as e:
-            print(f"STDOUT: {e.stdout}")
-            print(f"STDERR: {e.stderr}")
-            raise e
-
-        foldseek_output_to_detected_table(
-            tmpf,
-            result_tsv,
-            query_database_name,
-            query_type,
-            target_database_name,
-            target_type,
-            target_accession_rewriter_func = target_accession_rewriter_func,
-            evalue_threshold = evalue_threshold
-        )
+    try:
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:
+        print(f"STDOUT: {e.stdout}")
+        print(f"STDERR: {e.stderr}")
+        raise e
 
 
 if __name__ == "__main__":
@@ -87,14 +67,22 @@ if __name__ == "__main__":
     ap.add_argument("result_tsv")
     args = ap.parse_args()
 
-    run_foldseek(
-        args.query_faa,
-        args.target_db,
-        args.prost_db,
-        args.result_tsv,
-        args.query_database_name,
-        args.query_type,
-        args.target_database_name,
-        args.target_type,
-        evalue_threshold = args.evalue_threshold
-    )
+    with tempfile.TemporaryDirectory() as tmpd:
+        tmpf = os.path.join(tmpd, "foldseek-results.tsv")
+
+        run_foldseek(
+            args.query_faa,
+            args.target_db,
+            args.prost_db,
+            tmpf
+        )
+
+        foldseek_output_to_detected_table(
+            tmpf,
+            args.result_tsv,
+            args.query_database_name,
+            args.query_type,
+            args.target_database_name,
+            args.target_type,
+            evalue_threshold = args.evalue_threshold
+        )

@@ -20,10 +20,16 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--query-database-name", required=True)
     ap.add_argument("query_faa")
-    ap.add_argument("--entries-per-task", type=int, default=30)
+    ap.add_argument("--entries-per-task", type=int, default=300)
     ap.add_argument("--parallelism", type=int, default=45)
     ap.add_argument("--run-dir-parent", default=".")
     args = ap.parse_args()
+
+    gc_foldseek_dir = os.environ.get("GCLOUD_FOLDSEEK_DIR")
+    if gc_foldseek_dir is None:
+        raise Exception("Missing GCLOUD_FOLDSEEK_DIR env variable")
+    if gc_foldseek_dir.endswith("/"):
+        gc_foldseek_dir = gc_foldseek_dir[:-1]
 
     gc = GCHelperBase(args.run_dir_parent)
 
@@ -38,7 +44,8 @@ if __name__ == "__main__":
       NTASKS=len(fasta_files),
       GC_INPUT_PATH_PRE_INDEX=gc_input_path_pre_index,
       QUERY_DATABASE_NAME=args.query_database_name,
-      FOLDSEEK_HEADERS=HEADER_STR
+      FOLDSEEK_HEADERS=HEADER_STR,
+      GC_FOLDSEEK_DIR=gc_foldseek_dir
     )
 
     print(gc.host_run_dir)

@@ -17,8 +17,7 @@ gcloud batch jobs describe foldseek-swissprot-${BATCH_NAME} --location us-east1
 
 # Retrieve outouts
 
-gsutil cat ${GC_RUN_OUTPUT_DIR}/sequence_fs_\*.tsv > sequence_fs_full.tsv
-{ head -1 sequence_fs_full.tsv; grep -v protein_accession sequence_fs_full.tsv; } > sequence_fs.tsv; rm sequence_fs_full.tsv
+gsutil cat ${GC_RUN_OUTPUT_DIR}/sequence_fs_\*.tsv > sequence_fs_raw.tsv
 
 # Delete job in case you need to resubmit
 

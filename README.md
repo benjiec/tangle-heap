@@ -185,6 +185,18 @@ PYTHPATH=. python3 gcloud/foldseek-swissprot/setup.py \
   proteins.faa.gz
 ```
 
+The output file from above needs to be converted to the standard TSV format,
+use the `scripts/foldseek-swissprot.py` script with `--input-from-foldseek`
+option, e.g.
+
+```
+PYTHONPATH=. python3 scripts/foldseek-swissprot.py \
+  --query-database-name exp-doi:10.1126_sciadv.aba2498 \
+  --input-from-foldseek \
+  sequence_fs_raw.tsv sequence_fs.tsv
+```
+
+
 ## Pre-generated Relations
 
 Use the following script to convert UniProt to Pfam data, downloaded from
