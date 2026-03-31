@@ -18,7 +18,7 @@ gcloud batch jobs describe hmmscan-ko-${BATCH_NAME} --location us-east1
 # Retrieve outouts
 
 gsutil cat ${GC_RUN_OUTPUT_DIR}/sequence_ko_\*.tsv > sequence_ko_full.tsv
-{ head -1 sequence_ko_full.tsv; grep -v protein_accession sequence_ko_full.tsv; } > sequence_ko.tsv; rm sequence_ko_full.tsv
+{ head -1 sequence_ko_full.tsv; grep -v protein_accession sequence_ko_full.tsv; } > sequence_ko_unassigned.tsv; rm sequence_ko_full.tsv
 
 # Delete job in case you need to resubmit
 

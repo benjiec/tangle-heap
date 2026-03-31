@@ -165,7 +165,6 @@ PYTHONPATH=. python3 scripts/foldseek-swissprot.py \
 The query database name should uniquely identify the source of the query
 accessions in the query fasta file.
 
-
 From a .cif file, you can use the Docker image directly
 
 ```
@@ -175,6 +174,16 @@ docker run --rm -v /host/db-dir:/db -v /host/cif-file-dir:/app \
   --format-output "query,target,prob,evalue,bits,fident,qstart,qend,tstart,tend"
 ```
 
+To prepare and submit this job to run on Google Cloud, use the following script
+to create a run directory under `runs` (or whatever value for `--run-dir`), and
+then follow instructions in the README file in that run directory.
+
+```
+PYTHPATH=. python3 gcloud/foldseek-swissprot/setup.py \
+  --query-database-name exp-doi:10.1126_sciadv.aba2498.SRR9331959_algae_denovo \
+  --run-dir=runs \
+  proteins.faa.gz
+```
 
 ## Pre-generated Relations
 

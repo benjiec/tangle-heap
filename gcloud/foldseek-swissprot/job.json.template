@@ -24,28 +24,23 @@
             }
           },
           {
-            "displayName": "Run hmmscan",
+            "displayName": "Run FoldSeek",
             "container": {
-              "imageUri": "us-east1-docker.pkg.dev/needle-489321/tangle-docker/heap:latest",
+              "imageUri": "us-east1-docker.pkg.dev/needle-489321/tangle-docker/foldseek:amd64",
+              "entrypoint": "/bin/bash",
               "commands": [
-                "/bin/bash",
                 "-c",
-                "python3 scripts/hmmscan-pfam.py --cpus 4 --query-database-name ${QUERY_DATABASE_NAME} /data/input_${BATCH_TASK_INDEX}.faa /data/sequence_pfam_${BATCH_TASK_INDEX}.tsv"
+                "/usr/local/bin/entrypoint easy-search /data/input_${BATCH_TASK_INDEX}.faa /data/afdb-swissprot /data/sequence_fs_${BATCH_TASK_INDEX}.tsv /tmp --format-output \"${FOLDSEEK_HEADERS}\" --prostt5-model /data/prost-t5-weights"
               ],
               "volumes": [
                 "/data:/data" 
               ]
-            },
-            "environment": {
-              "variables": {
-                "HMM_DB_DIR": "/data/"
-              }
             }
           },
           {
             "displayName": "Upload Results",
             "script": {
-              "text": "ls -l /data/ && gsutil cp /data/sequence_pfam_${BATCH_TASK_INDEX}.tsv ${GC_RUN_OUTPUT_DIR}/"
+              "text": "ls -l /data/ && gsutil cp /data/sequence_fs_${BATCH_TASK_INDEX}.tsv ${GC_RUN_OUTPUT_DIR}/"
             }
           }
         ]

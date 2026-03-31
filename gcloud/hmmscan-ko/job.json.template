@@ -24,7 +24,7 @@
             }
           },
           {
-            "displayName": "Run Needle Core HMMScan",
+            "displayName": "Run hmmscan",
             "container": {
               "imageUri": "us-east1-docker.pkg.dev/needle-489321/tangle-docker/heap:latest",
               "commands": [

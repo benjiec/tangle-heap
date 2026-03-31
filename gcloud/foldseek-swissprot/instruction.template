@@ -1,0 +1,25 @@
+# Copy prep scripts to bucket
+
+gcloud storage cp prep-general.sh ${GC_RUN_DIR}/
+gcloud storage cp prep-task.sh ${GC_RUN_DIR}/
+
+# Copy inputs to bucket
+
+gcloud storage cp ${HOST_RUN_INPUT_REL_PATH}/* ${GC_RUN_INPUT_DIR}/
+
+# Submit job
+
+gcloud batch jobs submit foldseek-swissprot-${BATCH_NAME} --config job.json --location us-east1
+
+# Review job progress
+
+gcloud batch jobs describe foldseek-swissprot-${BATCH_NAME} --location us-east1
+
+# Retrieve outouts
+
+gsutil cat ${GC_RUN_OUTPUT_DIR}/sequence_fs_\*.tsv > sequence_fs_full.tsv
+{ head -1 sequence_fs_full.tsv; grep -v protein_accession sequence_fs_full.tsv; } > sequence_fs.tsv; rm sequence_fs_full.tsv
+
+# Delete job in case you need to resubmit
+
+gcloud batch jobs delete foldseek-swissprot-${BATCH_NAME} --location us-east1
