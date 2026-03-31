@@ -115,20 +115,35 @@ PYTHPATH=. python3 gcloud/hmmscan-pfam/setup.py \
 
 ### KO
 
+#### Searching
+
 You can search against KO HMM profile similarly,
 
 ```
 PYTHONPATH=. python3 scripts/hmmscan-ko.py \
   --query-database-name exp-doi:10.1126_sciadv.aba2498 \
-  query.faa test_result.tsv
+  query.faa test_result_unassigned.tsv
 ```
+
+To prepare and submit this job to run on Google Cloud, use the following script
+to create a run directory under `runs` (or whatever value for `--run-dir`), and
+then follow instructions in the README file in that run directory.
+
+```
+PYTHPATH=. python3 gcloud/hmmscan-ko/setup.py \
+  --query-database-name exp-doi:10.1126_sciadv.aba2498.SRR9331959_algae_denovo \
+  --run-dir=runs \
+  proteins.faa.gz
+```
+
+#### Assignment
 
 But because KO HMM profiles do not use GA scores, but rather a separate
 threshold file, a second script is needed to make assignments.
 
 ```
 PYTHONPATH=. python3 scripts/ko-assign.py \
-  test_result.tsv test_result_assigned.tsv
+  test_result_unassigned.tsv test_result_assigned.tsv
 ```
 
 Use the `--scoring-ratio-min` option to change the min ratio of bitscore over

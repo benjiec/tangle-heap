@@ -1,0 +1,86 @@
+{
+  "taskGroups": [
+    {
+      "taskCount": ${NTASKS},
+      "parallelism": ${PARALLELISM},
+      "taskCountPerNode": 1,
+      "taskSpec": {
+        "computeResource": {
+          "cpuMilli": 4000,
+          "memoryMib": 12000
+        },
+        "maxRetryCount": 5,
+        "runnables": [
+          {
+            "displayName": "General Prep",
+            "script": {
+              "text": "gsutil cp ${GC_RUN_DIR}/prep-general.sh ./prep-general.sh && bash ./prep-general.sh"
+            }
+          },
+          {
+            "displayName": "Task Specific Prep",
+            "script": {
+              "text": "gsutil cp ${GC_RUN_DIR}/prep-task.sh ./prep-task_${BATCH_TASK_INDEX}.sh && bash ./prep-task_${BATCH_TASK_INDEX}.sh"
+            }
+          },
+          {
+            "displayName": "Run Needle Core HMMScan",
+            "container": {
+              "imageUri": "us-east1-docker.pkg.dev/needle-489321/tangle-docker/heap:latest",
+              "commands": [
+                "/bin/bash",
+                "-c",
+                "python3 scripts/hmmscan-ko.py --cpus 4 --query-database-name ${QUERY_DATABASE_NAME} /data/input_${BATCH_TASK_INDEX}.faa /data/sequence_ko_${BATCH_TASK_INDEX}.tsv"
+              ],
+              "volumes": [
+                "/data:/data" 
+              ]
+            },
+            "environment": {
+              "variables": {
+                "HMM_DB_DIR": "/data/"
+              }
+            }
+          },
+          {
+            "displayName": "Upload Results",
+            "script": {
+              "text": "ls -l /data/ && gsutil cp /data/sequence_ko_${BATCH_TASK_INDEX}.tsv ${GC_RUN_OUTPUT_DIR}/"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "allocationPolicy": {
+    "network": {
+      "networkInterfaces": [
+        {
+          "network": "projects/needle-489321/global/networks/default",
+          "subnetwork": "projects/needle-489321/regions/us-east1/subnetworks/default",
+          "noExternalIpAddress": true
+        }
+      ]
+    },
+    "instances": [
+      {
+        "installGpuDrivers": false,
+        "policy": {
+          "machineType": "n2-standard-4",
+          "provisioningModel": "SPOT",
+          "bootDisk": {
+            "sizeGb": 50
+          }
+        }
+      }
+    ],
+    "location": {
+      "allowedLocations": [
+        "regions/us-east1"
+      ]
+    }
+  },
+  "logsPolicy": {
+    "destination": "CLOUD_LOGGING"
+  }
+}

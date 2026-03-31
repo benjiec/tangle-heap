@@ -5,7 +5,7 @@ gcloud storage cp prep-task.sh ${GC_RUN_DIR}/
 
 # Copy inputs to bucket
 
-gcloud storage cp inputs/* ${GC_RUN_INPUT_DIR}/
+gcloud storage cp ${HOST_RUN_INPUT_DIR}/* ${GC_RUN_INPUT_DIR}/
 
 # Submit job
 
