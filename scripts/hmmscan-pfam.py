@@ -17,11 +17,9 @@ if __name__ == "__main__":
     if db_dir is None:
         raise Exception("Please set HMM_DB_DIR to directory with Pfam HMM profiles")
 
-    hmm_db = os.path.join(db_dir, "Pfam-A.hmm")
+    hmm_db = os.path.join(db_dir, "Pfam-A.hmm.h3i")
     if not os.path.exists(hmm_db):
-        raise Exception(f"Cannot find Pfam HMM profile at {hmm_db}")
-    if not os.path.exists(hmm_db+".h3i"):
-        raise Exception(f"Pfam HMM profile {hmm_db} is not pressed")
+        raise Exception(f"Cannot find pressed Pfam HMM profile at {hmm_db}")
 
     results = hmmscan(hmm_db, args.query_faa, cpu=args.cpus, cutoff=True)
     hmm_results_to_detected_table(
