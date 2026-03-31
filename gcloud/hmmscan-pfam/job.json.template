@@ -30,7 +30,7 @@
               "commands": [
                 "/bin/bash",
                 "-c",
-                "python3 python3 scripts/hmmscan-pfam.py --cpus 4 --query-database-name ${QUERY_DATABASE_NAME} /data/input_${BATCH_TASK_INDEX}.faa /data/sequence_pfam_${BATCH_TASK_INDEX}.tsv"
+                "python3 scripts/hmmscan-pfam.py --cpus 4 --query-database-name ${QUERY_DATABASE_NAME} /data/input_${BATCH_TASK_INDEX}.faa /data/sequence_pfam_${BATCH_TASK_INDEX}.tsv"
               ],
               "volumes": [
                 "/data:/data" 

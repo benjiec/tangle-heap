@@ -25,6 +25,8 @@ if __name__ == "__main__":
     args = ap.parse_args()
 
     run_batch = unique_batch()
+    batch_name = re.sub("[^a-z0-9-]", "-", run_batch)
+
     fn_prefix = "input.faa."
     script_dir = Path(__file__).resolve().parent
 
@@ -57,7 +59,7 @@ if __name__ == "__main__":
         RUN_DIR=str(run_dir),
         PARALLELISM=args.parallelism,
         NTASKS=len(fasta_files),
-        BATCH_NAME=run_batch,
+        BATCH_NAME=batch_name,
         GC_HMM_PATH=gc_hmm_path,
         GC_RUN_DIR=gc_run_dir,
         GC_RUN_INPUT_DIR=gc_run_input_dir,
