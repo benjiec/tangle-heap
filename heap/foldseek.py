@@ -28,7 +28,7 @@ def foldseek_output_to_detected_table(
             tsv_tokens = line.strip().split('\t')
 
             row = {}
-            row["detection_type"] = "structure"
+            row["detection_type"] = "sequence"
             row["detection_method"] = "prost-t5-foldseek"
             row["batch"] = batch
             row["query_accession"] = tsv_tokens[HEADERS.index("query")]

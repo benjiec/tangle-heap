@@ -25,8 +25,8 @@ class TestParsingFoldSeekResultsToTable(unittest.TestCase):
 
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
-structure	prost-t5-foldseek	20260327_530fecb5	a	q	protein	b	t	protein	13	14	15	16	11.0	12.0			
-structure	prost-t5-foldseek	20260327_530fecb5	c	q	protein	d	t	protein	23	24	25	26	21.0	22.0			
+sequence	prost-t5-foldseek	20260327_530fecb5	a	q	protein	b	t	protein	13	14	15	16	11.0	12.0			
+sequence	prost-t5-foldseek	20260327_530fecb5	c	q	protein	d	t	protein	23	24	25	26	21.0	22.0			
 """
 
             with open(res_fn, "r") as f:
@@ -51,8 +51,8 @@ structure	prost-t5-foldseek	20260327_530fecb5	c	q	protein	d	t	protein	23	24	25	2
 
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
-structure	prost-t5-foldseek	20260327_530fecb5	a	q	protein	x	t	protein	13	14	15	16	11.0	12.0			
-structure	prost-t5-foldseek	20260327_530fecb5	c	q	protein	x	t	protein	23	24	25	26	21.0	22.0			
+sequence	prost-t5-foldseek	20260327_530fecb5	a	q	protein	x	t	protein	13	14	15	16	11.0	12.0			
+sequence	prost-t5-foldseek	20260327_530fecb5	c	q	protein	x	t	protein	23	24	25	26	21.0	22.0			
 """
 
             with open(res_fn, "r") as f:
@@ -77,7 +77,7 @@ structure	prost-t5-foldseek	20260327_530fecb5	c	q	protein	x	t	protein	23	24	25	2
 
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
-structure	prost-t5-foldseek	20260327_530fecb5	a	q	protein	b	t	protein	13	14	15	16	11.0	12.0			
+sequence	prost-t5-foldseek	20260327_530fecb5	a	q	protein	b	t	protein	13	14	15	16	11.0	12.0			
 """
 
             with open(res_fn, "r") as f:
