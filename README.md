@@ -59,6 +59,13 @@ Then, to use foldseek scripts, set the following environment variables
 FOLDSEEK_DB_DIR=</host/db_dir>
 ```
 
+### Other Docker Images
+
+Download these two
+
+  * MMSeqs2 docker image: `docker pull ghcr.io/soedinglab/mmseqs2`
+  * Muscle aligner: `docker pull pegi3s/muscle`
+
 
 ## Hosting Docker Images on Google Cloud
 
