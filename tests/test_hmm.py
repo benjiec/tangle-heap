@@ -100,9 +100,9 @@ class TestParsingHMMResultsToTable(unittest.TestCase):
             )
 
             expected = """
-detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
-sequence	hmm	20260327_530fecb5	a	q	protein	c	t	protein	4	5	2	3	1e-11	13.0			
-sequence	hmm	20260327_530fecb5	e	q	protein	g	t	protein	14	15	12	13	2e-11	15.0			
+detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	target_model	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
+sequence	hmm	20260327_530fecb5	a	q	protein	c	t	protein		4	5	2	3	1e-11	13.0			
+sequence	hmm	20260327_530fecb5	e	q	protein	g	t	protein		14	15	12	13	2e-11	15.0			
 """
 
             with open(tmpf, "r") as f:
@@ -137,8 +137,8 @@ sequence	hmm	20260327_530fecb5	e	q	protein	g	t	protein	14	15	12	13	2e-11	15.0
             )
 
             expected = """
-detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
-sequence	hmm	20260327_530fecb5	c	q	protein	a	t	protein	2	3	4	5	1e-11	13.0			
+detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	target_model	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
+sequence	hmm	20260327_530fecb5	c	q	protein	a	t	protein		2	3	4	5	1e-11	13.0			
 """
 
             with open(tmpf, "r") as f:
@@ -183,9 +183,9 @@ sequence	hmm	20260327_530fecb5	c	q	protein	a	t	protein	2	3	4	5	1e-11	13.0
             )
 
             expected = """
-detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
-sequence	hmm	20260327_530fecb5	b	q	protein	d	t	protein	4	5	2	3	1e-11	13.0			
-sequence	hmm	20260327_530fecb5	f	q	protein	h	t	protein	14	15	12	13	2e-11	15.0			
+detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	target_model	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
+sequence	hmm	20260327_530fecb5	b	q	protein	d	t	protein		4	5	2	3	1e-11	13.0			
+sequence	hmm	20260327_530fecb5	f	q	protein	h	t	protein		14	15	12	13	2e-11	15.0			
 """
 
             with open(tmpf, "r") as f:
