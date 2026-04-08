@@ -39,7 +39,8 @@ def filter_detected_by_target_length(detection_tsv, threshold_tsv, output_tsv, t
         target_model = group[0][target_field]
 
         if target_model not in thresholds:
-            print(f"Target model {target_model} not in threshold file, keeping match")
+            # print(f"Target model {target_model} not in threshold file, keeping match")
+            pass
         else:
             # print(group[0], target_model, total_target_length, thresholds[target_model])
             pass
