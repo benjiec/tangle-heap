@@ -20,6 +20,15 @@ gcloud batch jobs describe hmmscan-ko-${BATCH_NAME} --location us-east1
 gsutil cat ${GC_RUN_OUTPUT_DIR}/sequence_ko_\*.tsv > sequence_ko_full.tsv
 { head -1 sequence_ko_full.tsv; grep -v query_database sequence_ko_full.tsv; } > sequence_ko_unassigned.tsv; rm sequence_ko_full.tsv
 
+# or
+
+mkdir -p outputs
+# replace gs:// with gcs://
+rclone config reconnect gcs://
+rclone sync ${GC_RUN_OUTPUT_DIR}/ outputs/ -v
+cat outputs/sequence_ko_*.tsv > sequence_ko_full.tsv
+{ head -1 sequence_ko_full.tsv; grep -v query_database sequence_ko_full.tsv; } > sequence_ko_unassigned.tsv; rm sequence_ko_full.tsv
+
 # Delete job in case you need to resubmit
 
 gcloud batch jobs delete hmmscan-ko-${BATCH_NAME} --location us-east1
