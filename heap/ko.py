@@ -51,7 +51,7 @@ def filter_detected_by_target_length(detection_tsv, threshold_tsv, output_tsv, t
     DetectedTable.write_tsv(output_tsv, keep_rows)
 
 
-def assign_ko(detection_tsv, threshold_tsv, result_tsv, scoring_ratio_min=0.99):
+def assign_ko(detection_tsv, threshold_tsv, result_tsv, scoring_ratio_min=0.99, append=False):
 
     hmm_csv = CSVSource(DetectedTable, detection_tsv)
     threshold_csv = CSVSource(KOThresholdTable, threshold_tsv)
@@ -88,4 +88,4 @@ SELECT A.*,
         del row[rank_field]
         rows.append(row)
 
-    DetectedTable.write_tsv(result_tsv, rows)
+    DetectedTable.write_tsv(result_tsv, rows, append=append)
