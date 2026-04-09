@@ -26,6 +26,7 @@ mkdir -p outputs/
 # replace gs:// with gcs://
 rclone config reconnect gcs://
 rclone sync ${GC_RUN_OUTPUT_DIR}/ outputs/ -v
+# after processing
 cat outputs/sequence_pfam_*.tsv > sequence_pfam_full.tsv
 { head -1 sequence_pfam_full.tsv; grep -v query_database sequence_pfam_full.tsv; } > sequence_pfam.tsv; rm sequence_pfam_full.tsv
 
