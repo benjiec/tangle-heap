@@ -20,7 +20,7 @@ if __name__ == "__main__":
     ap.add_argument("--query-database-name", required=True)
     ap.add_argument("query_faa")
     ap.add_argument("--entries-per-task", type=int, default=5000)
-    ap.add_argument("--parallelism", type=int, default=45)
+    ap.add_argument("--parallelism", type=int, default=70)
     ap.add_argument("--run-dir-parent", default=".")
     args = ap.parse_args()
 
