@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "heap"
 version = "0.1.1"
 dependencies = [
-  "tangle @ git+https://github.com/benjiec/tangle.git@44def4e",
+  "tangle @ git+https://github.com/benjiec/tangle.git@4ae509b",
   "biopython>=1.81",
 ]
 description = "Detection and classification using HMM and Structural Search"

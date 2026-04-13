@@ -89,3 +89,4 @@ SELECT A.*,
         rows.append(row)
 
     DetectedTable.write_tsv(result_tsv, rows, append=append)
+    schema.duckdb_drop()
