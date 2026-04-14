@@ -25,7 +25,7 @@ gsutil cat ${GC_RUN_OUTPUT_DIR}/sequence_ko_\*.tsv > sequence_ko_full.tsv
 mkdir -p outputs
 # replace gs:// with gcs://
 rclone config reconnect gcs://
-rclone sync ${GC_RUN_OUTPUT_DIR}/ outputs/ -v
+rclone sync ${GC_RUN_OUTPUT_DIR}/ outputs/ --progress --gcs-bucket-policy-only
 # after processing
 cat outputs/sequence_ko_*.tsv > sequence_ko_full.tsv
 { head -1 sequence_ko_full.tsv; grep -v query_database sequence_ko_full.tsv; } > sequence_ko_unassigned.tsv; rm sequence_ko_full.tsv
