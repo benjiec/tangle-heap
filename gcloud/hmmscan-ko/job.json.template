@@ -43,9 +43,28 @@
             }
           },
           {
+            "displayName": "Make KO assignments",
+            "container": {
+              "imageUri": "us-east1-docker.pkg.dev/needle-489321/tangle-docker/heap:latest",
+              "commands": [
+                "/bin/bash",
+                "-c",
+                "python3 scripts/ko-assign.py --scoring-ratio-min 0.8 /data/sequence_ko_assigned_${BATCH_TASK_INDEX}.tsv /data/sequence_ko_${BATCH_TASK_INDEX}.tsv"
+              ],
+              "volumes": [
+                "/data:/data" 
+              ]
+            },
+            "environment": {
+              "variables": {
+                "HMM_DB_DIR": "/data/"
+              }
+            }
+          },
+          {
             "displayName": "Upload Results",
             "script": {
-              "text": "ls -l /data/ && gsutil cp /data/sequence_ko_${BATCH_TASK_INDEX}.tsv ${GC_RUN_OUTPUT_DIR}/"
+              "text": "ls -l /data/ && gsutil cp /data/sequence_ko_assigned_${BATCH_TASK_INDEX}.tsv ${GC_RUN_OUTPUT_DIR}/"
             }
           }
         ]

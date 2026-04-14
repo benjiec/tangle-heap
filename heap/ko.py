@@ -1,3 +1,4 @@
+import math
 import duckdb
 import itertools
 from tangle import unique_batch
@@ -73,17 +74,19 @@ SELECT A.*,
           ORDER BY A.evalue ASC
       ) as {rank_field}
   FROM {schema.name}.{DetectedTable.name} as A
-  JOIN {schema.name}.{KOThresholdTable.name} as B ON (A.target_model = B.model OR A.target_accession = B.model)
- WHERE A.bitscore >= B.threshold*{scoring_ratio_min}
+  LEFT JOIN {schema.name}.{KOThresholdTable.name} as B ON (A.target_model = B.model OR A.target_accession = B.model)
+ WHERE B.threshold IS NULL
+    OR (TRY_CAST(A.bitscore AS DOUBLE) >= TRY_CAST(B.threshold AS DOUBLE) * {scoring_ratio_min})
  ORDER BY A.query_database, A.query_type, A.query_accession, A.evalue
 """
 
     data = con.sql(sql).df().to_dict(orient='records')
     rows = []
     for row in data:
-        row["bitscore_threshold"] = row[threshold_field]
-        row["custom_metric_name"] = "evalue-rank"
-        row["custom_metric_value"] = row[rank_field]
+        if row[threshold_field] and not math.isnan(float(row[threshold_field])):
+            row["bitscore_threshold"] = row[threshold_field]
+            row["custom_metric_name"] = "evalue-rank"
+            row["custom_metric_value"] = row[rank_field]
         del row[threshold_field]
         del row[rank_field]
         rows.append(row)
