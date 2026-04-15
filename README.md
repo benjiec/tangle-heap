@@ -25,6 +25,7 @@ Download the following profiles
     * Also create `ko_thresholds.tsv` from KEGG FTP site `https://www.genome.jp/ftp/db/kofam/ko_list.gz`
       * Remove RNA entries
       * For rows withput a threshold, set threshold value to "-1", from "-"
+      * Change "knum" column header to "model"
 
   * Pfam HMM profiles: `https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz`
     * Run `hmmpress Pfam-A.hmm`
