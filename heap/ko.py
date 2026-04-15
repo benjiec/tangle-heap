@@ -8,7 +8,8 @@ from tangle.detected import DetectedTable
 
 KOThresholdTable = Table("ko_threshold", [
     Column("model"),
-    Column("threshold", type=float)
+    Column("threshold", type=float),
+    Column("alen", type=int)
 ])
 
 
@@ -52,7 +53,11 @@ def filter_detected_by_target_length(detection_tsv, threshold_tsv, output_tsv, t
     DetectedTable.write_tsv(output_tsv, keep_rows)
 
 
-def assign_ko(detection_tsv, threshold_tsv, result_tsv, scoring_ratio_min=0.99, append=False):
+def assign_ko(detection_tsv, threshold_tsv, result_tsv,
+              scoring_ratio_min=0.99,
+              keep_missing_threshold=False,
+              compare_against_alen_if_no_threshold=True,
+              append=False):
 
     hmm_csv = CSVSource(DetectedTable, detection_tsv)
     threshold_csv = CSVSource(KOThresholdTable, threshold_tsv)
@@ -65,6 +70,18 @@ def assign_ko(detection_tsv, threshold_tsv, result_tsv, scoring_ratio_min=0.99, 
     threshold_field = "ko_threshold_value"
     rank_field = "assignment_rank" 
 
+    conditions = [
+        f"(TRY_CAST(B.threshold AS DOUBLE) > 0 AND TRY_CAST(A.bitscore AS DOUBLE) >= TRY_CAST(B.threshold AS DOUBLE) * {scoring_ratio_min})"
+    ]
+    if keep_missing_threshold:
+        conditions.append("(B.threshold IS NULL OR TRY_CAST(B.threshold AS DOUBLE) <= 0)")
+    if compare_against_alen_if_no_threshold:
+        conditions.append("(TRY_CAST(B.threshold AS DOUBLE) <= 0 AND TRY_CAST(A.bitscore AS DOUBLE) >= TRY_CAST(B.alen AS DOUBLE))")
+
+    for x in conditions:
+        assert x.startswith("(") and x.endswith(")")
+    condition_sql = " OR ".join(conditions)
+
     con = duckdb.connect(":default:")
     sql = f"""
 SELECT A.*,
@@ -75,8 +92,7 @@ SELECT A.*,
       ) as {rank_field}
   FROM {schema.name}.{DetectedTable.name} as A
   LEFT JOIN {schema.name}.{KOThresholdTable.name} as B ON (A.target_model = B.model OR A.target_accession = B.model)
- WHERE B.threshold IS NULL
-    OR (TRY_CAST(A.bitscore AS DOUBLE) >= TRY_CAST(B.threshold AS DOUBLE) * {scoring_ratio_min})
+ WHERE {condition_sql}
  ORDER BY A.query_database, A.query_type, A.query_accession, A.evalue
 """
 
