@@ -18,7 +18,9 @@ Download the following profiles
 
   * KEGG KO profile HMMs: `https://www.genome.jp/ftp/db/kofam/profiles.tar.gz`
     * Then concatenate all the profiles together: `cat profiles/*.hmm > ko.hmm`
+    * Remove all entries that are RNA or small RNAs: make a list of KOs to include, then use `hmmfetch -f` to create a new `.hmm` file
     * Run `hmmpress ko.hmm`
+    * Run `hmmfetch --index ko.hmm`
     * Also create `ko_thresholds.tsv` from KEGG FTP site `https://www.genome.jp/ftp/db/kofam/ko_list.gz`
       * Filter away rows without a threshold, using `grep -v "\-\t\-" ko_thresholds.txt`
 
