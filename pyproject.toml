@@ -8,6 +8,7 @@ version = "0.1.2"
 dependencies = [
   "tangle @ git+https://github.com/benjiec/tangle.git@4ae509b",
   "biopython>=1.81",
+  "scikit-learn>=1.8",
 ]
 description = "Detection and classification using HMM and Structural Search"
 requires-python = ">=3.9"
