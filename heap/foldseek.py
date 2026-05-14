@@ -128,7 +128,6 @@ def foldseek_output_to_detected_table(
 
     cluster_proc.process(df)
     contain_proc.process(cluster_proc.df)
-    print(contain_proc.df)
 
     fsrows = contain_proc.df.to_dict(orient='records')
     batch = unique_batch() if batch is None else batch
