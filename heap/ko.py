@@ -9,7 +9,7 @@ from tangle.detected import DetectedTable
 KOThresholdTable = Table("ko_threshold", [
     Column("model"),
     Column("threshold", type=float),
-    Column("alen", type=int)
+    Column("mlen", type=int)
 ])
 
 
@@ -56,7 +56,7 @@ def filter_detected_by_target_length(detection_tsv, threshold_tsv, output_tsv, t
 def assign_ko(detection_tsv, threshold_tsv, result_tsv,
               scoring_ratio_min=0.99,
               keep_missing_threshold=False,
-              compare_against_alen_if_no_threshold=True,
+              compare_against_mlen_if_no_threshold=True,
               append=False):
 
     hmm_csv = CSVSource(DetectedTable, detection_tsv)
@@ -75,8 +75,8 @@ def assign_ko(detection_tsv, threshold_tsv, result_tsv,
     ]
     if keep_missing_threshold:
         conditions.append("(B.threshold IS NULL OR TRY_CAST(B.threshold AS DOUBLE) <= 0)")
-    if compare_against_alen_if_no_threshold:
-        conditions.append("(TRY_CAST(B.threshold AS DOUBLE) <= 0 AND TRY_CAST(A.bitscore AS DOUBLE) >= TRY_CAST(B.alen AS DOUBLE))")
+    if compare_against_mlen_if_no_threshold:
+        conditions.append("(TRY_CAST(B.threshold AS DOUBLE) <= 0 AND TRY_CAST(A.bitscore AS DOUBLE) >= TRY_CAST(B.mlen AS DOUBLE))")
 
     for x in conditions:
         assert x.startswith("(") and x.endswith(")")

@@ -14,7 +14,7 @@ class TestKOAssignmentLogic(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	400.01	domain	trim	100\n")
                 f.write("K00002	200.00	domain	all	100\n")
 
@@ -44,7 +44,7 @@ sequence	hmm	20260327_ff30c5d5	test	b	protein	z	KO	protein	K00002	193	232	552	59
         with tempfile.TemporaryDirectory() as temp_dir:
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	400.01	domain	trim	100\n")
                 f.write("K00002	200.00	domain	all	100\n")
 
@@ -74,7 +74,7 @@ sequence	hmm	20260327_ff30c5d5	test	b	protein	K00002	KO	protein		193	232	552	592
         with tempfile.TemporaryDirectory() as temp_dir:
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	400.01	domain	trim	100\n")
                 f.write("K00002	200.00	domain	all	100\n")
 
@@ -104,7 +104,7 @@ sequence	hmm	20260327_ff30c5d5	test	b	protein	K00002	KO	protein		193	232	552	592
         with tempfile.TemporaryDirectory() as temp_dir:
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	400.01	domain	trim	100\n")
                 f.write("K00002	200.00	domain	all	100\n")
 
@@ -136,7 +136,7 @@ sequence	hmm	20260327_ff30c5d5	test	b	protein	K00002	KO	protein		193	232	552	592
         with tempfile.TemporaryDirectory() as temp_dir:
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	400.01	domain	trim	100\n")
 
             hmm_res_tsv = os.path.join(temp_dir, "results.tsv")
@@ -161,12 +161,12 @@ sequence	hmm	20260327_ff30c5d5	test	c	protein	w	KO	protein	K00002	193	232	552	59
                 self.maxDiff = None
                 self.assertEqual(f.read().strip(), expected.strip())
 
-    def test_can_compare_against_alen_if_invalid_threshold(self):
+    def test_can_compare_against_mlen_if_invalid_threshold(self):
 
         with tempfile.TemporaryDirectory() as temp_dir:
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	-1	domain	trim	400\n")
 
             hmm_res_tsv = os.path.join(temp_dir, "results.tsv")
@@ -178,9 +178,9 @@ sequence	hmm	20260327_ff30c5d5	test	c	protein	w	KO	protein	K00002	193	232	552	59
                 f.write("sequence	hmm	20260327_ff30c5d5	test	c	protein	w	KO	protein	K00002	193	232	552	592	0.1	3			\n")
 
             assignment_tsv = os.path.join(temp_dir, "assigned.tsv")
-            assign_ko(hmm_res_tsv, ko_threshold_tsv, assignment_tsv, scoring_ratio_min=1.0, compare_against_alen_if_no_threshold=True)
+            assign_ko(hmm_res_tsv, ko_threshold_tsv, assignment_tsv, scoring_ratio_min=1.0, compare_against_mlen_if_no_threshold=True)
 
-            # second K00001 match not included because bitscore is not >= alen
+            # second K00001 match not included because bitscore is not >= mlen
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	target_model	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
 sequence	hmm	20260327_ff30c5d5	test	a	protein	x	KO	protein	K00001	60	151	544	628	0.067	400.02	-1.0	evalue-rank	1.0
@@ -190,12 +190,12 @@ sequence	hmm	20260327_ff30c5d5	test	a	protein	x	KO	protein	K00001	60	151	544	628
                 self.maxDiff = None
                 self.assertEqual(f.read().strip(), expected.strip())
 
-    def test_if_not_compare_against_alen_treat_invalid_threshold_as_missing(self):
+    def test_if_not_compare_against_mlen_treat_invalid_threshold_as_missing(self):
 
         with tempfile.TemporaryDirectory() as temp_dir:
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	-1	domain	trim	400\n")
 
             hmm_res_tsv = os.path.join(temp_dir, "results.tsv")
@@ -205,9 +205,9 @@ sequence	hmm	20260327_ff30c5d5	test	a	protein	x	KO	protein	K00001	60	151	544	628
                 f.write("sequence	hmm	20260327_ff30c5d5	test	b	protein	y	KO	protein	K00001	193	232	552	592	0.01	100			\n")
 
             assignment_tsv = os.path.join(temp_dir, "assigned.tsv")
-            assign_ko(hmm_res_tsv, ko_threshold_tsv, assignment_tsv, scoring_ratio_min=1.0, compare_against_alen_if_no_threshold=False)
+            assign_ko(hmm_res_tsv, ko_threshold_tsv, assignment_tsv, scoring_ratio_min=1.0, compare_against_mlen_if_no_threshold=False)
 
-            # second K00001 match not included because bitscore is not >= alen
+            # second K00001 match not included because bitscore is not >= mlen
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	target_model	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
 """
@@ -219,7 +219,7 @@ detection_type	detection_method	batch	query_accession	query_database	query_type	
             # now keep missing threshold matches
             assign_ko(hmm_res_tsv, ko_threshold_tsv, assignment_tsv, scoring_ratio_min=1.0, keep_missing_threshold=True)
 
-            # second K00001 match not included because bitscore is not >= alen
+            # second K00001 match not included because bitscore is not >= mlen
             expected = """
 detection_type	detection_method	batch	query_accession	query_database	query_type	target_accession	target_database	target_type	target_model	query_start	query_end	target_start	target_end	evalue	bitscore	bitscore_threshold	custom_metric_name	custom_metric_value
 sequence	hmm	20260327_ff30c5d5	test	a	protein	x	KO	protein	K00001	60	151	544	628	0.067	400.02	-1.0	evalue-rank	1.0
@@ -239,7 +239,7 @@ class TestKOFilteringLogic(unittest.TestCase):
 
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	160.0	domain	trim	100\n")
                 f.write("K00002	80.0	domain	all	100\n")
 
@@ -268,7 +268,7 @@ class TestKOFilteringLogic(unittest.TestCase):
 
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	160.0	domain	trim	100\n")
                 f.write("K00002	80.0	domain	all	100\n")
 
@@ -298,7 +298,7 @@ class TestKOFilteringLogic(unittest.TestCase):
 
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	160.0	domain	trim	100\n")
                 f.write("K00002	80.0	domain	all	100\n")
 
@@ -326,7 +326,7 @@ class TestKOFilteringLogic(unittest.TestCase):
 
             ko_threshold_tsv = os.path.join(temp_dir, "ko_threshold.tsv")
             with open(ko_threshold_tsv, 'w') as f:
-                f.write("model	threshold	score_type	profile_type	alen\n")
+                f.write("model	threshold	score_type	profile_type	mlen\n")
                 f.write("K00001	160.0	domain	trim	100\n")
                 f.write("K00002	80.0	domain	all	100\n")
 
