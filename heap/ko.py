@@ -9,6 +9,9 @@ from tangle.detected import DetectedTable
 KOThresholdTable = Table("ko_threshold", [
     Column("model"),
     Column("threshold", type=float),
+    Column("score_type"),
+    Column("profile_type"),
+    Column("nseq_used", type=int),
     Column("mlen", type=int)
 ])
 
