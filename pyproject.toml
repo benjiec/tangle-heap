@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "heap"
 version = "0.1.2"
 dependencies = [
-  "tangle @ git+https://github.com/benjiec/tangle.git@4ae509b",
+  "tangle @ git+https://github.com/benjiec/tangle.git@1e285d4",
   "biopython>=1.81",
   "scikit-learn>=1.8",
 ]

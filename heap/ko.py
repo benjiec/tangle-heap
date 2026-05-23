@@ -4,16 +4,7 @@ import itertools
 from tangle import unique_batch
 from tangle.models import Schema, Table, Column, CSVSource
 from tangle.detected import DetectedTable
-
-
-KOThresholdTable = Table("ko_threshold", [
-    Column("model"),
-    Column("threshold", type=float),
-    Column("score_type"),
-    Column("profile_type"),
-    Column("nseq_used", type=int),
-    Column("mlen", type=int)
-])
+from tangle.kegg import KOThresholdTable
 
 
 def filter_detected_by_target_length(detection_tsv, threshold_tsv, output_tsv, target_field=None, min_match_to_threshold_ratio=0.5):
