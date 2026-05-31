@@ -203,11 +203,23 @@ PYTHONPATH=. python3 scripts/foldseek-swissprot.py \
 Using foldseek to create a 3Di database, with Prost-T5
 
 ```
-docker run --rm \
+docker run --rm --platform linux/amd64 \
   -v <hmm_dir>:/hmm \
   -v <foldseek_dir>:/foldseek \
   -v <3di_output_dir>:/output \
   ghcr.io/steineggerlab/foldseek createdb \
   /hmm/ko.consensus.faa /output/ko.3di \
   --prostt5-model /foldseek/prost-t5-weights --threads 6
+
+# two steps to dump db to fasta file of 3Di sequences
+
+docker run --rm --platform linux/amd64 \
+  -v <3di_output_dir>:/output \
+  ghcr.io/steineggerlab/foldseek \
+  lndb /output/ko.3di_h /output/ko.3di_ss_h
+
+docker run --rm --platform linux/amd64 \
+  -v <3di_output_dir>:/output \
+  ghcr.io/steineggerlab/foldseek \
+  convert2fasta /output/ko.3di_ss /output/ko.3di.faa
 ```
