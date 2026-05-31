@@ -199,3 +199,15 @@ PYTHONPATH=. python3 scripts/foldseek-swissprot.py \
   --input-from-foldseek \
   sequence_fs_raw.tsv sequence_fs.tsv
 ```
+
+Using foldseek to create a 3Di database, with Prost-T5
+
+```
+docker run --rm \
+  -v <hmm_dir>:/hmm \
+  -v <foldseek_dir>:/foldseek \
+  -v <3di_output_dir>:/output \
+  ghcr.io/steineggerlab/foldseek createdb \
+  /hmm/ko.consensus.faa /output/ko.3di \
+  --prostt5-model /foldseek/prost-t5-weights --threads 6
+```
