@@ -34,6 +34,6 @@ cp final_db* <dest_dir>
 # Dump 3Di sequences
 
 cd db/
-docker run --platform linux/amd64 --rm 
+docker run --platform linux/amd64 --rm \
   -v .:/db ghcr.io/steineggerlab/foldseek \
   convert2fasta /db/final_db_ss /db/final_3di.fasta
