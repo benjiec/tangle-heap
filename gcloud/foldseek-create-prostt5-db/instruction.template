@@ -27,6 +27,7 @@ gcloud batch jobs delete foldseek-create-prostt5-db-${BATCH_NAME} --location us-
 # Merge foldseek databases
 
 cd db/
+rm final_db*
 ../merge.sh N
 cp final_db* <dest_dir>
 
@@ -35,4 +36,4 @@ cp final_db* <dest_dir>
 cd db/
 docker run --platform linux/amd64 --rm 
   -v .:/db ghcr.io/steineggerlab/foldseek \
-  convert2fasta /db/final_db_ss /db/output_3di.fasta
+  convert2fasta /db/final_db_ss /db/final_3di.fasta
