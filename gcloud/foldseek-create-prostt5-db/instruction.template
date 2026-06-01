@@ -1,0 +1,38 @@
+# Copy prep scripts to bucket
+
+gcloud storage cp prep-general.sh ${GC_RUN_DIR}/
+gcloud storage cp prep-task.sh ${GC_RUN_DIR}/
+
+# Copy inputs to bucket
+
+gcloud storage cp ${HOST_RUN_INPUT_REL_PATH}/* ${GC_RUN_INPUT_DIR}/
+
+# Submit job
+
+gcloud batch jobs submit foldseek-create-prostt5-db-${BATCH_NAME} --config job.json --location us-east1
+
+# Review job progress
+
+gcloud batch jobs describe foldseek-create-prostt5-db-${BATCH_NAME} --location us-east1
+
+# Retrieve outouts
+
+mkdir db/
+gcloud storage cp ${GC_RUN_OUTPUT_DIR}/db_\* db/
+
+# Delete job in case you need to resubmit
+
+gcloud batch jobs delete foldseek-create-prostt5-db-${BATCH_NAME} --location us-east1
+
+# Merge foldseek databases
+
+cd db/
+../merge.sh N
+cp final_db* <dest_dir>
+
+# Dump 3Di sequences
+
+cd db/
+docker run --platform linux/amd64 --rm 
+  -v .:/db ghcr.io/steineggerlab/foldseek \
+  convert2fasta /db/final_db_ss /db/output_3di.fasta

@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e  # Exit immediately if any command fails
+
+WORKSPACE="/data"
+TEST_DIR="$WORKSPACE/prost-t5-weights"
+
+mkdir -p "$WORKSPACE"
+chmod 777 "$WORKSPACE"
+
+if [ ! -d "$TEST_DIR" ]; then
+  echo "DB files missing. Downloading from GCS..."
+  gsutil -m -o "GSUtil:check_hashes=never" cp -r ${GC_FOLDSEEK_DIR}/prost-t5-weights "$WORKSPACE/"
+else
+  echo "DB files may already exist. Skipping download."
+fi

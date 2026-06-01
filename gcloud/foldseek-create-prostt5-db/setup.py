@@ -11,6 +11,7 @@ PREP_TASK_TEMPLATE = "prep-task.sh.template"
 PREP_TASK_SCRIPT = "prep-task.sh"
 JOB_TEMPLATE = "job.json.template"
 JOB_JSON = "job.json"
+MERGE_SH = "merge.sh"
 INSTRUCTION_TEMPLATE = "instruction.template"
 INSTRUCTION_FILE = "README"
 
@@ -51,3 +52,4 @@ if __name__ == "__main__":
     gc.instantiate_template(script_dir / PREP_TASK_TEMPLATE, PREP_TASK_SCRIPT)
     gc.instantiate_template(script_dir / JOB_TEMPLATE, JOB_JSON)
     gc.instantiate_template(script_dir / INSTRUCTION_TEMPLATE, INSTRUCTION_FILE)
+    gc.instantiate_template(script_dir / MERGE_SH, MERGE_SH)
