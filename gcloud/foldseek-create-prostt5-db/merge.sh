@@ -18,8 +18,8 @@ fi
 # Initialization: Clone part1 files as the base of final_db
 echo "Initializing final_db with part 0..."
 cp db_0 final_db; cp db_0.index final_db.index; cp db_0.dbtype final_db.dbtype; cp db_0.lookup final_db.lookup
-cp db_0 final_db_h; cp db_0.index final_db_h.index; cp db_0.dbtype final_db_h.dbtype
-cp db_0 final_db_ss; cp db_0.index final_db_ss.index; cp db_0.dbtype final_db_ss.dbtype
+cp db_0_h final_db_h; cp db_0_h.index final_db_h.index; cp db_0_h.dbtype final_db_h.dbtype
+cp db_0_ss final_db_ss; cp db_0_ss.index final_db_ss.index; cp db_0_ss.dbtype final_db_ss.dbtype
 
 # Loop through part 1 up to part N
 for (( i=1; i<N; i++ )); do
@@ -48,6 +48,6 @@ done
 
 # Step 4: Reindex the unified database globally
 echo "Generating global index mappings..."
-docker run --platform linux/amd64 --rm -v .:/db ghcr.io/steineggerlab/foldseek createindex /db/final_db /tmp
+docker run --platform linux/amd64 --rm -v .:/db ghcr.io/steineggerlab/foldseek createindex /db/final_db /tmp --index-exclude 2
 
 echo "Database assembly complete: final_db"
