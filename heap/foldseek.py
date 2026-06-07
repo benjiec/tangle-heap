@@ -14,14 +14,14 @@ class DataClusteringProcessor(object):
     Processes data per-query to maintain modularity and performance.
     """
     
-    def __init__(self, group_col, feature_cols, log_cols, sort_col):
+    def __init__(self, group_col, feature_cols, log_cols, sort_bits_col):
         self.df = None
         self.group_col = group_col
         self.feature_cols = feature_cols
         self.log_cols = log_cols
-        self.sort_col = sort_col
+        self.sort_bits_col = sort_bits_col
 
-    def _cluster_group(self, group, feature_cols, log_cols, sort_col, eps):
+    def _cluster_group(self, group, feature_cols, log_cols, sort_bits_col, eps):
         """Applies DBSCAN to a single query group."""
         if len(group) <= 1:
             return group
@@ -44,7 +44,7 @@ class DataClusteringProcessor(object):
         
         # Representative selection: Sort by bits (assumed 4th col) and keep top per cluster
         # Replace 'bits' with your ranking column name
-        return group.sort_values(sort_col, ascending=False).drop_duplicates('cluster_id')
+        return group.sort_values(sort_bits_col, ascending=False).drop_duplicates('cluster_id')
 
     def process(self, df, eps: float = 0.5):
         """Iterates through queries and collapses clusters."""
@@ -53,7 +53,7 @@ class DataClusteringProcessor(object):
         grouped = df.groupby(self.group_col, sort=False)
         
         for name, group in grouped:
-            refined_group = self._cluster_group(group, self.feature_cols, self.log_cols, self.sort_col, eps)
+            refined_group = self._cluster_group(group, self.feature_cols, self.log_cols, self.sort_bits_col, eps)
             clustered_groups.append(refined_group)
 
         self.df = pd.concat(clustered_groups)
@@ -119,17 +119,21 @@ def foldseek_output_to_detected_table(
     target_type,
     target_accession_rewriter_func = None,
     evalue_threshold = None,
-    batch = None
+    batch = None,
+    filter_by_query = True
   ):
 
-    cluster_proc = DataClusteringProcessor("query", ["qstart", "qend", "bits", "evalue"], ["evalue"], "bits")
-    contain_proc = DataContainmentProcessor("query", "qstart", "qend", "evalue") 
     df = pd.read_csv(foldseek_output_fn, sep='\t', names=HEADERS)
 
-    cluster_proc.process(df)
-    contain_proc.process(cluster_proc.df)
+    if filter_by_query:
+        cluster_proc = DataClusteringProcessor("query", ["qstart", "qend", "bits", "evalue"], ["evalue"], "bits")
+        contain_proc = DataContainmentProcessor("query", "qstart", "qend", "evalue")
+        cluster_proc.process(df)
+        contain_proc.process(cluster_proc.df)
+        fsrows = contain_proc.df.to_dict(orient='records')
+    else:
+        fsrows = df.to_dict(orient='records')
 
-    fsrows = contain_proc.df.to_dict(orient='records')
     batch = unique_batch() if batch is None else batch
 
     rows = []
@@ -154,7 +158,7 @@ def foldseek_output_to_detected_table(
         if target_accession_rewriter_func is not None:
             row["target_accession"] = target_accession_rewriter_func(row["target_accession"])
 
-        if evalue_threshold is None or row["evalue"] < evalue_threshold:
+        if evalue_threshold is None or float(row["evalue"]) < evalue_threshold:
             rows.append(row)
 
     DetectedTable.write_tsv(result_tsv, rows)

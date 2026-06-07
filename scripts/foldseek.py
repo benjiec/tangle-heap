@@ -61,6 +61,8 @@ if __name__ == "__main__":
     ap.add_argument("--target-database-name", required=True)
     ap.add_argument("--target-type", required=True)
     ap.add_argument("--evalue-threshold", type=float, default=1e-3)
+    ap.add_argument("--input-from-foldseek", default=None)
+    ap.add_argument("--keep-all-results", action='store_true', default=False)
     ap.add_argument("query_faa")
     ap.add_argument("target_db")
     ap.add_argument("prost_db")
@@ -68,14 +70,18 @@ if __name__ == "__main__":
     args = ap.parse_args()
 
     with tempfile.TemporaryDirectory() as tmpd:
-        tmpf = os.path.join(tmpd, "foldseek-results.tsv")
 
-        run_foldseek(
-            args.query_faa,
-            args.target_db,
-            args.prost_db,
-            tmpf
-        )
+        if args.input_from_foldseek:
+            tmpf = args.input_from_foldseek
+        else:
+          tmpf = os.path.join(tmpd, "foldseek-results.tsv")
+
+          run_foldseek(
+              args.query_faa,
+              args.target_db,
+              args.prost_db,
+              tmpf
+          )
 
         foldseek_output_to_detected_table(
             tmpf,
@@ -84,5 +90,6 @@ if __name__ == "__main__":
             args.query_type,
             args.target_database_name,
             args.target_type,
-            evalue_threshold = args.evalue_threshold
+            evalue_threshold = args.evalue_threshold,
+            filter_by_query = not args.keep_all_results
         )
