@@ -2,6 +2,7 @@ import re
 import os
 import tempfile
 import subprocess
+import itertools
 from dataclasses import dataclass
 from typing import List
 from Bio import SearchIO
@@ -96,6 +97,25 @@ def hmmscan(hmm_file_name, fasta_path, cutoff=True, cpu=None):
         return parse_hmm_domtbl(domtbl_path)
 
 
+def aggregate_rows(rows):
+    kf = lambda r: (r["query_accession"], r["query_database"], r["target_accession"], r["target_database"])
+    rows = sorted(rows, key=kf)
+    aggregated_rows = []
+
+    for k,group in itertools.groupby(rows, key=kf):
+        group_rows = list(group)
+        repr = group_rows[0]
+        repr["evalue"] = min([r["evalue"] for r in group_rows])
+        repr["bitscore"] = sum([r["bitscore"] for r in group_rows])
+        repr["target_start"] = min([r["target_start"] for r in group_rows])
+        repr["target_end"] = max([r["target_end"] for r in group_rows])
+        repr["query_start"] = min([r["query_start"] for r in group_rows])
+        repr["query_end"] = max([r["query_end"] for r in group_rows])
+        aggregated_rows.append(repr)
+
+    return aggregated_rows
+
+
 def hmm_results_to_detected_table(
     results,
     result_tsv,
@@ -104,7 +124,8 @@ def hmm_results_to_detected_table(
     target_database,
     target_type,
     hmm_mode,
-    batch=None
+    batch=None,
+    aggregate=True
   ):
 
     assert hmm_mode in ("hmmscan", "hmmsearch")
@@ -141,4 +162,7 @@ def hmm_results_to_detected_table(
         row["bitscore"] = res["dom_score"]
         rows.append(row)
 
+    if aggregate:
+        rows = aggregate_rows(rows)
+    
     DetectedTable.write_tsv(result_tsv, rows)
