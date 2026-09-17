@@ -168,9 +168,15 @@ python3 scripts/hmmscan.py \
   nfkb_ikb.hmm needle_proteins.faa needle_nfkb_ikb.tsv
 
 python3 scripts/ko-assign.py \
-  --threshold-file nfkb_ikb_thresholds_low.tsv \
+  --threshold-file nfkb_ikb_thresholds_low.csv \
   needle_nfkb_ikb_assigned.tsv \
   needle_nfkb_ikb.tsv
+```
+
+The threshold file needs to have the following headers
+
+```
+model,threshold,score_type,profile_type,f_measure,nseq,nseq_used,alen,mlen,eff_nseq,re_pos,definition
 ```
 
 
