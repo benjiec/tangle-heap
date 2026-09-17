@@ -156,6 +156,24 @@ for example, the resulting file may include putative matches worth
 investigating.
 
 
+## Other HMM DBs
+
+Use `scripts/hmmscan.py` and `scripts/ko-assign` (with `--threshold-file`
+option) to perform scans with other databases.
+
+```
+python3 scripts/hmmscan.py \
+  --query-database-name _ \
+  --target-database-name sieve_nfkb_ikb \
+  nfkb_ikb.hmm needle_proteins.faa needle_nfkb_ikb.tsv
+
+python3 scripts/ko-assign.py \
+  --threshold-file nfkb_ikb_thresholds_low.tsv \
+  needle_nfkb_ikb_assigned.tsv \
+  needle_nfkb_ikb.tsv
+```
+
+
 ## FoldSeek Searching
 
 Use the following script to search the SwissProt database

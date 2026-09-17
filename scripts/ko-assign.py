@@ -8,17 +8,20 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("assigned_tsv")
     ap.add_argument("hmm_result_tsvs", nargs="+")
+    ap.add_argument("--threshold-file")
     ap.add_argument("--scoring-ratio-min", default=0.99, type=float)
     ap.add_argument("--append", default=False, action="store_true")
     args = ap.parse_args()
 
-    db_dir = os.environ.get("HMM_DB_DIR")
-    if db_dir is None:
-        raise Exception("Please set HMM_DB_DIR to directory with KO HMM profiles")
+    ko_threshold = args.threshold_file
+    if not ko_threshold:
+        db_dir = os.environ.get("HMM_DB_DIR")
+        if db_dir is None:
+            raise Exception("Please set HMM_DB_DIR to directory with KO HMM profiles")
+        ko_threshold = os.path.join(db_dir, "ko_thresholds.tsv")
 
-    ko_threshold = os.path.join(db_dir, "ko_thresholds.tsv")
     if not os.path.exists(ko_threshold):
-        raise Exception(f"Cannot find KO threshold TSV at {ko_threshold}")
+        raise Exception(f"Cannot find threshold TSV at {ko_threshold}")
 
     for i,tsv_fn in enumerate(args.hmm_result_tsvs):
         append = (i > 0) or args.append
