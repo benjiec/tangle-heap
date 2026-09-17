@@ -29,5 +29,6 @@ if __name__ == "__main__":
         args.query_type,
         "Pfam-A",
         "protein",
-        "hmmscan"
+        "hmmscan",
+        aggregate=False
     )
